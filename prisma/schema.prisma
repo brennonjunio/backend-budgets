@@ -104,3 +104,13 @@ model saidas {
 
   @@index([cd_produto], map: "saidas_produtos_cd_produto_fk")
 }
+
+model usuarios {
+  cd_usuario  Int      @id @default(autoincrement())
+  nm_usuario  String   @unique(map: "usuarios_pk") @db.VarChar(50)
+  dt_cadastro DateTime @default(now()) @db.DateTime(0)
+  dt_update   DateTime @default(now()) @db.DateTime(0)
+  senha       String   @db.VarChar(500)
+  email       String   @unique(map: "email") @db.VarChar(60)
+  status      String   @default("A") @db.VarChar(1)
+}
