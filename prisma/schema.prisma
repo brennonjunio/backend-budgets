@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model entradas {
+  cd_interno     Int       @id @default(autoincrement())
+  cd_produto     Int
+  quantidade     Decimal   @db.Decimal(10, 2)
+  dt_entrada     DateTime? @default(now()) @db.DateTime(0)
+  dt_atualizacao DateTime? @default(now()) @db.DateTime(0)
+  produtos       produtos  @relation(fields: [cd_produto], references: [cd_produto], onDelete: NoAction, onUpdate: NoAction, map: "entradas_produtos_cd_produto_fk")
+
+  @@index([cd_produto], map: "entradas_produtos_cd_produto_fk")
+}
+
+model estoque {
+  cd_interno     Int      @id @default(autoincrement())
+  cd_produto     Int
+  estoque        Int      @default(0)
+  dt_entrada     DateTime @default(now()) @db.DateTime(0)
+  dt_atualizacao DateTime @default(now()) @db.DateTime(0)
+  cd_fabricante  String?  @db.VarChar(30)
+}
+
+model grupo_produtos {
+  cd_grupo       Int        @id @default(autoincrement())
+  descricao      String     @db.VarChar(50)
+  dt_criacao     DateTime   @default(now()) @db.DateTime(0)
+  dt_atualizacao DateTime   @default(now()) @db.DateTime(0)
+  produtos       produtos[]
+}
+
+model itens_orcamento {
+  cd_interno     Int        @id @default(autoincrement())
+  cd_orcamento   Int
+  cd_produto     Int
+  valor          Decimal    @default(0.00) @db.Decimal(10, 2)
+  desconto       Decimal    @default(0.00) @db.Decimal(10, 2)
+  tipo_desconto  Int?
+  quantidade     Decimal    @default(1) @db.Decimal(10, 0)
+  valor_agregado Decimal    @default(0.00) @db.Decimal(10, 2)
+  valor_liquido  Decimal    @default(0.00) @db.Decimal(10, 2)
+  orcamentos     orcamentos @relation(fields: [cd_orcamento], references: [cd_orcamento], onDelete: NoAction, onUpdate: NoAction, map: "itens_orcamento_orcamentos_cd_orcamento_fk")
+  produtos       produtos   @relation(fields: [cd_produto], references: [cd_produto], onDelete: NoAction, onUpdate: NoAction, map: "itens_orcamento_produtos_cd_produto_fk")
+
+  @@index([cd_orcamento], map: "itens_orcamento_orcamentos_cd_orcamento_fk")
+  @@index([cd_produto], map: "itens_orcamento_produtos_cd_produto_fk")
+}
+
+model marcas {
+  cd_marca       Int        @id @default(autoincrement())
+  descricao      String     @db.VarChar(50)
+  dt_criacao     DateTime   @default(now()) @db.DateTime(0)
+  dt_atualizacao DateTime   @default(now()) @db.DateTime(0)
+  produtos       produtos[]
+}
+
+model orcamentos {
+  cd_orcamento    Int               @id @default(autoincrement())
+  cliente         String?           @db.VarChar(200)
+  cpfCnpj         String?           @db.VarChar(14)
+  dt_criacao      DateTime          @default(now()) @db.DateTime(0)
+  dt_atualizacao  DateTime?         @default(now()) @db.DateTime(0)
+  telefone        String?           @db.VarChar(14)
+  email           String?           @db.VarChar(50)
+  endereco        String?           @db.VarChar(200)
+  cep             String?           @db.VarChar(8)
+  status          String?           @db.VarChar(2)
+  itens_orcamento itens_orcamento[]
+}
+
+model produtos {
+  cd_produto           Int               @id @default(autoincrement())
+  descricao            String            @db.VarChar(50)
+  cod_fabricante       String?           @db.VarChar(50)
+  descricao_fabricante String?           @db.VarChar(100)
+  cod_barra            String?           @db.VarChar(30)
+  dt_criacao           DateTime          @default(now()) @db.DateTime(0)
+  dt_atualizacao       DateTime          @default(now()) @db.DateTime(0)
+  cd_marca             Int?
+  cd_grupo             Int?
+  entradas             entradas[]
+  itens_orcamento      itens_orcamento[]
+  grupo_produtos       grupo_produtos?   @relation(fields: [cd_grupo], references: [cd_grupo], onDelete: NoAction, onUpdate: NoAction, map: "produtos_grupo_produtos_cd_grupo_fk")
+  marcas               marcas?           @relation(fields: [cd_marca], references: [cd_marca], onDelete: NoAction, onUpdate: NoAction, map: "produtos_marcas_cd_marca_fk")
+  saidas               saidas[]
+
+  @@index([cd_grupo], map: "produtos_grupo_produtos_cd_grupo_fk")
+  @@index([cd_marca], map: "produtos_marcas_cd_marca_fk")
+}
+
+model saidas {
+  cd_interno     Int       @id @default(autoincrement())
+  cd_produto     Int
+  quantidade     Decimal   @db.Decimal(10, 2)
+  dt_saida       DateTime? @default(now()) @db.DateTime(0)
+  dt_atualizacao DateTime? @default(now()) @db.DateTime(0)
+  produtos       produtos  @relation(fields: [cd_produto], references: [cd_produto], onDelete: NoAction, onUpdate: NoAction, map: "saidas_produtos_cd_produto_fk")
+
+  @@index([cd_produto], map: "saidas_produtos_cd_produto_fk")
+}
