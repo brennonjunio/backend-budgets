@@ -20,14 +20,21 @@ export class AuthService {
         result.senha,
       );
       if (validatePasswrod) {
-        const token = jwt.sign({
+        const token = jwt.sign(
+          {
+            user: result.nm_usuario,
+            userId: result.cd_usuario,
+          },
+          process.env.SECRET,
+          { expiresIn: '1h' },
+        );
+        return {
+          token,
           user: result.nm_usuario,
           userId: result.cd_usuario,
-        },
-        process.env.SECRET,
-        {expiresIn: '1h'});
+        };
       }
-      return result;
+      throw new Error('Usuario ou senha Invalidos');
     } catch (error) {
       GenerateException(error);
     }
