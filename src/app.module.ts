@@ -4,9 +4,10 @@ import { ResponseInterceptor } from './shared/response.interceptor';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { UsersModule } from './app/users/users.module';
 import { PasswordService } from './shared/pass';
+import { AuthModule } from './app/auth/auth.module';
 
 @Module({
-  imports: [ProductsModule, UsersModule],
+  imports: [ProductsModule, UsersModule, AuthModule],
   controllers: [],
   providers: [
     PasswordService,
