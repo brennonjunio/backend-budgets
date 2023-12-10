@@ -6,12 +6,24 @@ import { map } from 'rxjs/operators';
 export class ResponseInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
-      map(data => ({
-        statusCode: HttpStatus.OK,
-        message: 'Success',
-        timestamp: new Date().toISOString(),
-        data,
-      })),
+      map(data => {
+        if (data === null || data === undefined || (Array.isArray(data) && data.length === 0)) {
+          return {
+            statusCode: HttpStatus.NO_CONTENT, 
+            message: 'Não contém dados',
+            timestamp: new Date().toISOString(),
+            data,
+          };
+        } else {
+          
+          return {
+            statusCode: HttpStatus.OK,
+            message: 'Success',
+            timestamp: new Date().toISOString(),
+            data,
+          };
+        }
+      }),
     );
   }
 }
