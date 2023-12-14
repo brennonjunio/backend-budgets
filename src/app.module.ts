@@ -9,9 +9,10 @@ import { AuthToken } from './shared/auth.guard';
 import { AuthService } from './app/auth/auth.service';
 import { UserRepository } from './app/users/users.repository';
 import { ProductGroupModule } from './app/product-group/product-group.module';
+import { ProductBrandModule } from './app/product-brand/product-brand.module';
 
 @Module({
-  imports: [ProductsModule, UsersModule, AuthModule, ProductGroupModule],
+  imports: [ProductsModule, UsersModule, AuthModule, ProductGroupModule, ProductBrandModule],
   controllers: [],
   providers: [
     PasswordService,
