@@ -6,4 +6,7 @@ export class ProductsRepository {
 
     return result
   }
+  async createProducts(){
+    
+  }
 }
