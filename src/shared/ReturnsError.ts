@@ -1,8 +1,8 @@
-import { HttpException, HttpStatus } from "@nestjs/common";
+// ReturnsError.ts
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { get } from 'lodash';
 
-export function GenerateException(error) {
-    const message = get(error, 'message', get(error,'response','internal server error'));
-    const statusCode = get(error, 'status', HttpStatus.INTERNAL_SERVER_ERROR);
+export function GenerateException(error, statusCode = HttpStatus.INTERNAL_SERVER_ERROR) {
+    const message = get(error, 'message', get(error, 'response', 'Internal Server Error'));
     throw new HttpException({ message, statusCode }, statusCode);
 }

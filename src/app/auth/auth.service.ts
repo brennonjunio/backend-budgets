@@ -26,7 +26,7 @@ export class AuthService {
             userId: result.cd_usuario,
           },
           process.env.SECRET,
-          { expiresIn: '1h' },
+          { expiresIn: '8h' },
         );
         return {
           token,
@@ -38,5 +38,19 @@ export class AuthService {
     } catch (error) {
       GenerateException(error);
     }
+  }
+  async validateToken(token: string){
+    let result:any;
+    try {
+      const secret = process.env.SECRET;
+      const decoded = jwt.verify(token, String(secret), {
+        ignoreExpiration: false,
+      });
+
+      result = { isValidToken: true, data: decoded };
+    } catch (err) {
+      result = { isValidToken: false, error: "Token Invalido ou Expirado" };
+    }
+    return result;
   }
 }
